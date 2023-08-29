@@ -1,3 +1,8 @@
+# SSO認証
+```
+aws sso login --profile NW_AdministratorAccess-283455887821
+```
+
 # Redisへの入り方
 docker配下で
 ```
