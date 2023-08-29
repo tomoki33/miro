@@ -13,6 +13,10 @@ docker-compose up
 redis-cli
 ```
 
+docker落とすコマンド
+```
+docker-compose down
+```
 # Redis基本コマンド
 SET key value: 指定されたキーに値を設定します。
 GET key: 指定されたキーに設定された値を取得します。
