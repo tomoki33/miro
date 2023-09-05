@@ -1,5 +1,6 @@
 <template>
   <div>
+    <input type="color" v-model="noteColor">
     <button @click="addNote">Add Note</button>
     <div class="canvas">
       <div
@@ -12,6 +13,7 @@
         <div class="note-content">
           <textarea
             v-model="note.text"
+            :style="{ backgroundColor: note.color }"
             @focus="editingIndex = index"
             @blur="editingIndex = -1"
           ></textarea>
@@ -29,6 +31,7 @@ export default {
       notes: [],
       editingIndex: -1,
       draggingIndex: -1,
+      noteColor: '#FFFF00',
       dragStartX: 0,
       dragStartY: 0
     };
@@ -38,6 +41,7 @@ export default {
       const newNote = {
         x: 50,
         y: 50,
+        color: this.noteColor,
         text: ""
       };
       this.notes.push(newNote);
