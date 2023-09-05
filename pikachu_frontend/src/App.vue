@@ -13,7 +13,7 @@
         <div class="note-content">
           <textarea
             v-model="note.text"
-            :style="{ backgroundColor: note.color }"
+            :style="{ backgroundColor: note.color , textAlign: 'center' }"
             @focus="editingIndex = index"
             @blur="editingIndex = -1"
           ></textarea>
@@ -80,8 +80,8 @@ export default {
 <style scoped>
 .canvas {
   position: relative;
-  width: 100%;
-  height: 600px;
+  width: 10000px;
+  height: 10000px;
   background-color: #82c4e8;
 }
 
