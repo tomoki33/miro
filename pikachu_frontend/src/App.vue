@@ -99,12 +99,14 @@ export default {
 
 .note-content textarea {
   width: 100%;
-  height: 100px;
+  height: 100%;
   border: none;
   resize: none;
   outline: none;
   font-size: 14px;
   line-height: 1.5;
+  aspect-ratio: 1/1; /* add this line to make the note square */
+  aspect-ratio: 1/1; /* add this line to make the note square */
 }
 
 .delete-button {
