@@ -1,7 +1,7 @@
 import Axios from 'axios'
 
 export const Service = Axios.create({
-    baseURL: process.env.VUE_APP_BACKEND_BASE_URL + "/",
+    baseURL: "http://localhost:8085"+ "/",
     timeout:10000,
     headers:{
         "Content-Type": "application/json",

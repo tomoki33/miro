@@ -1,6 +1,7 @@
 <template>
   <div>
     <input type="color" v-model="noteColor">
+    <button @click="pikachu">pikachu</button>
     <button @click="addNote">Add Note</button>
     <div class="canvas">
       <div
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { Service } from './service/service'
 
 export default {
   data() {
@@ -45,35 +46,20 @@ export default {
         // notes配列が変更されたときに実行される処理
         console.log('notes changed.Old notes:', oldNotes);
         console.log("Notes changed. New notes:", newNotes);
-        this.saveNotesToBackend()
       },
       deep: true, // ネストされたプロパティも監視
     },
   },
   methods: {
-
-    async saveNotesToBackend() {
-      console.log('Saving notes to the backend...天ぷら');
-      try {
-        // バックエンドのエンドポイントURLを指定
-        const backendUrl = 'http://your-backend-url/endpoint'; // バックエンドの実際のURLに置き換えてください
-
-        // データをバックエンドに送信
-        const response = await axios.post(backendUrl, {
-          notes: this.notes,
-        });
-
-        // バックエンドからの応答をコンソールに表示 (オプション)
-        console.log('Response from backend:', response.data);
-
-        // 成功したらユーザーに通知 (オプション)
-        // this.$toast.success('Notes saved to the backend.');
-
-      } catch (error) {
-        // エラーが発生した場合のエラーハンドリング (オプション)
-        console.error('Error saving notes:', error);
-        // this.$toast.error('Error saving notes to the backend.');
-      }
+    pikachu(){
+      const data = 'じろうyamada'
+    Service.post('/pikachu', data)
+        .then(response => {
+         console.log('帰って来た:',response.data)
+        })
+        .catch(error => {
+          console.log('えらー:',error);
+        })
     },
     addNote() {
       const newNote = {
