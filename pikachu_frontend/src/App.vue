@@ -12,10 +12,11 @@
       >
         <div class="note-content">
           <textarea
+            ref="noteTextArea"
             v-model="note.text"
-            :style="{ backgroundColor: note.color , textAlign: 'center' }"
+            :style="{ backgroundColor: note.color , textAlign: 'center', fontSize: note.fontSize + 'px' }"
             @focus="editingIndex = index"
-            @blur="editingIndex = -1"
+            @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
           <button class="delete-button" @click="removeNote(index)">×</button>
         </div>
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -36,13 +39,49 @@ export default {
       dragStartY: 0
     };
   },
+  watch: {
+    notes: {
+      handler(newNotes, oldNotes) {
+        // notes配列が変更されたときに実行される処理
+        console.log('notes changed.Old notes:', oldNotes);
+        console.log("Notes changed. New notes:", newNotes);
+        this.saveNotesToBackend()
+      },
+      deep: true, // ネストされたプロパティも監視
+    },
+  },
   methods: {
+
+    async saveNotesToBackend() {
+      console.log('Saving notes to the backend...天ぷら');
+      try {
+        // バックエンドのエンドポイントURLを指定
+        const backendUrl = 'http://your-backend-url/endpoint'; // バックエンドの実際のURLに置き換えてください
+
+        // データをバックエンドに送信
+        const response = await axios.post(backendUrl, {
+          notes: this.notes,
+        });
+
+        // バックエンドからの応答をコンソールに表示 (オプション)
+        console.log('Response from backend:', response.data);
+
+        // 成功したらユーザーに通知 (オプション)
+        // this.$toast.success('Notes saved to the backend.');
+
+      } catch (error) {
+        // エラーが発生した場合のエラーハンドリング (オプション)
+        console.error('Error saving notes:', error);
+        // this.$toast.error('Error saving notes to the backend.');
+      }
+    },
     addNote() {
       const newNote = {
         x: 50,
         y: 50,
         color: this.noteColor,
-        text: ""
+        text: "",
+        fontSize: 14
       };
       this.notes.push(newNote);
     },
@@ -68,15 +107,19 @@ export default {
     },
     removeNote(index) {
       this.notes.splice(index, 1);
+    },
+    adjustFontSize(index) {
+      const noteTextArea = this.$refs.noteTextArea[index];
+      const noteContent = noteTextArea.parentNode;
+      const noteHeight = noteContent.clientHeight;
+      const noteWidth = noteContent.clientWidth;
+      const fontSize = Math.min(noteHeight, noteWidth) / 2;
+      this.notes[index].fontSize = fontSize;
     }
   }
 };
 </script>
-
-
-
-
-
+    
 <style scoped>
 .canvas {
   position: relative;

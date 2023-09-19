@@ -1,4 +1,4 @@
-package com.aiful.pikachu;
+package com.example.pikachu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
