@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 public class PikachuController {
-    // @Autowired
-    // private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     // @GetMapping("/pikachu")
     // public List<Pikachu> getAllPikachu() {
@@ -25,7 +25,7 @@ public class PikachuController {
     
     @PostMapping("/pikachu")
     public void addPikachu(@RequestBody String pikachu) {
-    //    redisTemplate.opsForValue().set("1", pikachu);
+       redisTemplate.opsForValue().set("1", pikachu);
        System.out.println(pikachu);
     }
     

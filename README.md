@@ -17,6 +17,11 @@ docker落とすコマンド
 ```
 docker-compose down
 ```
+# SpringBootの立ち上げコマンド
+```
+mvn spring-boot:run
+```
+
 # Redis基本コマンド
 SET key value: 指定されたキーに値を設定します。
 GET key: 指定されたキーに設定された値を取得します。
