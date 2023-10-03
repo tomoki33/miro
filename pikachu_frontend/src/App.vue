@@ -1,8 +1,6 @@
 <template>
   <div>
     <input type="color" v-model="noteColor">
-    <button @click="getpikachu">じろう</button>
-    <button @click="pikachu">pikachu</button>
     <button @click="addNote">Add Note</button>
     <div class="canvas">
       <div
@@ -43,16 +41,17 @@ export default {
   },
   watch: {
     notes: {
-      handler(newNotes, oldNotes) {
-        // notes配列が変更されたときに実行される処理
-        console.log('notes changed.Old notes:', oldNotes);
-        console.log("Notes changed. New notes:", newNotes);
+      handler() {
+        this.pikachu()
       },
       deep: true, // ネストされたプロパティも監視
     },
   },
   created(){
-    this.getpikachu()
+    this.getpikachu();
+    setInterval(() => {
+      this.getpikachu();
+    }, 1000);
   },
   methods: {
     getpikachu(){
