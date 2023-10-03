@@ -1,6 +1,7 @@
 <template>
   <div>
     <input type="color" v-model="noteColor">
+    <button @click="getpikachu">じろう</button>
     <button @click="pikachu">pikachu</button>
     <button @click="addNote">Add Note</button>
     <div class="canvas">
@@ -51,9 +52,15 @@ export default {
     },
   },
   methods: {
+    getpikachu(){
+      Service.get('/getpikachu').then(response => {
+        console.log('帰って来たGET:',response.data)
+        this.notes = response.data
+      })
+    },
     pikachu(){
-      const data = 'じろうyamada'
-    Service.post('/pikachu', data)
+      console.log('pikachu:',JSON.stringify(this.notes))
+    Service.post('/pikachu', JSON.stringify(this.notes))
         .then(response => {
          console.log('帰って来た:',response.data)
         })

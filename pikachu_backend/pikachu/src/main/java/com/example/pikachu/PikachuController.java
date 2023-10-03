@@ -1,11 +1,17 @@
 package com.example.pikachu;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @RestController
 @CrossOrigin
@@ -13,19 +19,19 @@ public class PikachuController {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    // @GetMapping("/pikachu")
-    // public List<Pikachu> getAllPikachu() {
-    //     return pikachuService.getAllPikachu();
-    // }
-    
-    // @GetMapping("/pikachu/{id}")
-    // public Pikachu getPikachu(@PathVariable String id) {
-    //     return pikachuService.getPikachu(id);
-    // }
-    
+//    @GetMapping("/getpikachu")
+//    public List<Notes> getPikachu() {
+//     String json = redisTemplate.opsForValue().get("notes").toString();
+//     List<Notes> pikachu = new Gson().fromJson(json, new TypeToken<List<Notes>>(){}.getType());
+//     System.out.println("げっと"+pikachu);
+//     return pikachu;
+// }
+
     @PostMapping("/pikachu")
-    public void addPikachu(@RequestBody String pikachu) {
-       redisTemplate.opsForValue().set("1", pikachu);
+    public void addPikachu(@RequestBody List<Notes> pikachu) {
+        System.out.println(pikachu);
+        String json = new Gson().toJson(pikachu);
+       redisTemplate.opsForValue().set("notes", json);
        System.out.println(pikachu);
     }
     
