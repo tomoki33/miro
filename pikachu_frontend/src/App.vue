@@ -1,7 +1,17 @@
 <template>
+  <!-- <input type="color" v-model="noteColor"> -->
   <div>
     <input type="color" v-model="noteColor">
     <button @click="addNote">Add Note</button>
+    <button @click="penColor">penColor</button>
+    <button @click="toggleColorMenu">NoteColor</button>
+    <ul v-if="showColorMenu" class="color-menu">
+      <li
+        v-for="(colorOption, index) in noteColors"
+        :key="index"
+        @click="changeNoteColor(colorOption.value)"
+      >{{ colorOption.name }}</li>
+    </ul>
     <div class="canvas">
       <div
         v-for="(note, index) in notes"
@@ -14,7 +24,12 @@
           <textarea
             ref="noteTextArea"
             v-model="note.text"
-            :style="{ backgroundColor: note.color , textAlign: 'center', fontSize: note.fontSize + 'px' }"
+            :style="{
+              backgroundColor: note.color ,
+              textAlign: 'center',
+              color: textColor,
+              fontSize: note.fontSize + 'px'
+              }"
             @focus="editingIndex = index"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
@@ -26,7 +41,6 @@
 </template>
 
 <script>
-import { Service } from './service/service'
 
 export default {
   data() {
@@ -36,8 +50,20 @@ export default {
       draggingIndex: -1,
       noteColor: '#FFFF00',
       dragStartX: 0,
-      dragStartY: 0
+      dragStartY: 0,
+      textColor: '#000000' ,//初期の文字カラー
+      noteColors: [
+      { name: 'Black', value: '#000000' },
+      { name: 'Red', value: '#FF0000' },
+      { name: 'Green', value: '#00FF00' },
+      { name: 'Blue', value: '#0000FF' },
+      // 他の色オプションを追加できます
+    ],
+    showColorMenu: false,
     };
+  },
+  created(){
+    this.getpikachu()
   },
   watch: {
     notes: {
@@ -76,7 +102,6 @@ export default {
         y: 50,
         color: this.noteColor,
         text: "",
-        fontSize: 14
       };
       this.notes.push(newNote);
     },
@@ -87,6 +112,9 @@ export default {
 
       window.addEventListener("mousemove", this.dragNote);
       window.addEventListener("mouseup", this.stopDragging);
+    },
+    penColor() {
+      this.textColor = this.noteColor;
     },
     dragNote(event) {
       if (this.draggingIndex >= 0) {
@@ -104,17 +132,30 @@ export default {
       this.notes.splice(index, 1);
     },
     adjustFontSize(index) {
-      const noteTextArea = this.$refs.noteTextArea[index];
-      const noteContent = noteTextArea.parentNode;
-      const noteHeight = noteContent.clientHeight;
-      const noteWidth = noteContent.clientWidth;
-      const fontSize = Math.min(noteHeight, noteWidth) / 2;
+      console.log("adjustFontSize");
+      const noteTextArea = this.$refs.noteTextArea[index]; // テキストエリアの要素を取得
+      const noteContent = noteTextArea.parentNode; // 親要素を取得
+      const noteHeight = noteContent.clientHeight; // 親要素の高さを取得
+      const noteWidth = noteContent.clientWidth; // 親要素の幅を取得
+      const fontSize = Math.min(noteHeight, noteWidth) / 5; // 高さと幅の最小値を使って新しいフォントサイズを計算
+
+      // ノートのフォントサイズを更新
       this.notes[index].fontSize = fontSize;
-    }
+    },
+    toggleColorMenu() {
+    this.showColorMenu = !this.showColorMenu;
+    },
+    changeNoteColor(color) {
+      this.noteColor = color;
+      this.showColorMenu = false; // メニューを閉じる
+      this.notes.forEach((note) => {
+        note.color = this.noteColor;
+      });
+    },
   }
 };
 </script>
-    
+
 <style scoped>
 .canvas {
   position: relative;
@@ -143,7 +184,7 @@ export default {
   outline: none;
   font-size: 14px;
   line-height: 1.5;
-  aspect-ratio: 1/1; /* add this line to make the note square */
+  resize: both; /*テキストエリアのサイズを拡大縮小可能にする */
   aspect-ratio: 1/1; /* add this line to make the note square */
 }
 
