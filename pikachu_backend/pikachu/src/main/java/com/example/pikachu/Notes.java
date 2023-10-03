@@ -15,5 +15,7 @@ public class Notes {
     @Getter
     private String text;
     @Getter
+    private String textColor;
+    @Getter
     private int fontSize;
 }

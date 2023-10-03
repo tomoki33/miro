@@ -27,7 +27,7 @@
             :style="{
               backgroundColor: note.color ,
               textAlign: 'center',
-              color: textColor,
+              color: note.textColor,
               fontSize: note.fontSize + 'px'
               }"
             @focus="editingIndex = index"
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { Service } from './service/service';
 
 export default {
   data() {
@@ -51,7 +52,7 @@ export default {
       noteColor: '#FFFF00',
       dragStartX: 0,
       dragStartY: 0,
-      textColor: '#000000' ,//初期の文字カラー
+      // textColor: '#000000' ,//初期の文字カラー
       noteColors: [
       { name: 'Black', value: '#000000' },
       { name: 'Red', value: '#FF0000' },
@@ -61,9 +62,6 @@ export default {
     ],
     showColorMenu: false,
     };
-  },
-  created(){
-    this.getpikachu()
   },
   watch: {
     notes: {
@@ -75,9 +73,9 @@ export default {
   },
   created(){
     this.getpikachu();
-    setInterval(() => {
-      this.getpikachu();
-    }, 1000);
+    // setInterval(() => {
+    //   this.getpikachu();
+    // }, 1000);
   },
   methods: {
     getpikachu(){
@@ -102,6 +100,7 @@ export default {
         y: 50,
         color: this.noteColor,
         text: "",
+        textColor:'#000000',
       };
       this.notes.push(newNote);
     },
@@ -114,7 +113,10 @@ export default {
       window.addEventListener("mouseup", this.stopDragging);
     },
     penColor() {
-      this.textColor = this.noteColor;
+      console.log('aaaa')
+      this.notes.forEach(note => {
+      note.textColor = this.noteColor;
+    });
     },
     dragNote(event) {
       if (this.draggingIndex >= 0) {

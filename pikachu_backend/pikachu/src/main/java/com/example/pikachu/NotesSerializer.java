@@ -15,6 +15,7 @@ public class NotesSerializer extends JsonSerializer<Notes>{
         jsonGenerator.writeNumberField("y", notes.getY());
         jsonGenerator.writeStringField("color", notes.getColor());
         jsonGenerator.writeStringField("text", notes.getText());
+        jsonGenerator.writeStringField("textColor", notes.getTextColor());
         jsonGenerator.writeNumberField("fontSize", notes.getFontSize());
         jsonGenerator.writeEndObject();
     }
