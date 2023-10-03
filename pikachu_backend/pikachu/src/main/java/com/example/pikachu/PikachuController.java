@@ -19,13 +19,13 @@ public class PikachuController {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-//    @GetMapping("/getpikachu")
-//    public List<Notes> getPikachu() {
-//     String json = redisTemplate.opsForValue().get("notes").toString();
-//     List<Notes> pikachu = new Gson().fromJson(json, new TypeToken<List<Notes>>(){}.getType());
-//     System.out.println("げっと"+pikachu);
-//     return pikachu;
-// }
+   @GetMapping("/getpikachu")
+   public List<Notes> getPikachu() {
+    String json = redisTemplate.opsForValue().get("notes").toString();
+    List<Notes> pikachu = new Gson().fromJson(json, new TypeToken<List<Notes>>(){}.getType());
+    System.out.println("げっと"+pikachu);
+    return pikachu;
+}
 
     @PostMapping("/pikachu")
     public void addPikachu(@RequestBody List<Notes> pikachu) {

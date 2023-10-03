@@ -51,6 +51,9 @@ export default {
       deep: true, // ネストされたプロパティも監視
     },
   },
+  created(){
+    this.getpikachu()
+  },
   methods: {
     getpikachu(){
       Service.get('/getpikachu').then(response => {
