@@ -30,7 +30,7 @@
               color: note.textColor,
               fontSize: note.fontSize + 'px'
               }"
-            @focus="editingIndex = index"
+            @focus="highlightText(); editingIndex = index"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
           <button class="delete-button" @click="removeNote(index)">×</button>
@@ -61,6 +61,7 @@ export default {
       // 他の色オプションを追加できます
     ],
     showColorMenu: false,
+    highlighted: false
     };
   },
   watch: {
@@ -73,11 +74,15 @@ export default {
   },
   created(){
     this.getpikachu();
-    // setInterval(() => {
-    //   this.getpikachu();
-    // }, 1000);
+    setInterval(() => {
+      this.getpikachu();
+    }, 1000);
   },
   methods: {
+    highlightText() {
+      // フォーカス時の処理
+      this.highlighted = true;
+    },
     getpikachu(){
       Service.get('/getpikachu').then(response => {
         console.log('帰って来たGET:',response.data)
@@ -200,5 +205,10 @@ export default {
   line-height: 1;
   cursor: pointer;
   padding: 0;
+}
+
+textarea:focus {
+  border: 2px solid #1e2226; /* ハイライトの境界線の色を指定 */
+  /* その他のスタイルを追加できます（例：背景色、テキスト色など） */
 }
 </style>
