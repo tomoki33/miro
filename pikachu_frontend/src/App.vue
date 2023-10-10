@@ -30,6 +30,7 @@
               color: note.textColor,
               fontSize: note.fontSize + 'px'
               }"
+            @click="selectNote(index)"
             @focus="editingIndex = index"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
@@ -61,6 +62,7 @@ export default {
       // 他の色オプションを追加できます
     ],
     showColorMenu: false,
+    selectedNoteIndex: -1
     };
   },
   watch: {
@@ -112,11 +114,13 @@ export default {
       window.addEventListener("mousemove", this.dragNote);
       window.addEventListener("mouseup", this.stopDragging);
     },
+    selectNote(index) {
+    this.selectedNoteIndex = index;
+  },
     penColor() {
-      console.log('aaaa')
-      this.notes.forEach(note => {
-      note.textColor = this.noteColor;
-    });
+      if (this.selectedNoteIndex >= 0) {
+      this.notes[this.selectedNoteIndex].textColor = this.noteColor;
+      }
     },
     dragNote(event) {
       if (this.draggingIndex >= 0) {
