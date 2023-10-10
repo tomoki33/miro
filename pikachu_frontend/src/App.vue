@@ -1,10 +1,12 @@
 <template>
   <!-- <input type="color" v-model="noteColor"> -->
   <div>
-    <input type="color" v-model="noteColor">
-    <button @click="addNote">Add Note</button>
-    <button @click="penColor">penColor</button>
-    <button @click="toggleColorMenu">NoteColor</button>
+    <input type="color" style="margin-right: 10px;" v-model="noteColor">
+    <button class="btn" @click="addNote" title="付箋を追加">
+      <i class="fa-regular fa-note-sticky"></i></button>
+    <button class="btn" @click="penColor" title="文字の色を変更">
+      <i class="fa-solid fa-pen"></i></button>
+    <!-- <button @click="toggleColorMenu">NoteColor</button> -->
     <ul v-if="showColorMenu" class="color-menu">
       <li
         v-for="(colorOption, index) in noteColors"
@@ -43,6 +45,8 @@
 
 <script>
 import { Service } from './service/service';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 export default {
   data() {
@@ -204,5 +208,14 @@ export default {
   line-height: 1;
   cursor: pointer;
   padding: 0;
+}
+.btn {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  margin-right: 5px;
 }
 </style>
