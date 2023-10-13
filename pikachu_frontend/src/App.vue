@@ -1,19 +1,21 @@
 <template>
   <!-- <input type="color" v-model="noteColor"> -->
   <div>
-    <input type="color" style="margin-right: 10px;" v-model="noteColor">
-    <button class="btn" @click="addNote" title="付箋を追加">
-      <i class="fa-regular fa-note-sticky"></i></button>
-    <button class="btn" @click="penColor" title="文字の色を変更">
-      <i class="fa-solid fa-pen"></i></button>
-    <!-- <button @click="toggleColorMenu">NoteColor</button> -->
-    <ul v-if="showColorMenu" class="color-menu">
-      <li
-        v-for="(colorOption, index) in noteColors"
-        :key="index"
-        @click="changeNoteColor(colorOption.value)"
-      >{{ colorOption.name }}</li>
-    </ul>
+    <div class="menu">
+      <input type="color" style="margin-right: 10px;" v-model="noteColor">
+      <button class="btn" @click="addNote" title="付箋を追加">
+        <i class="fa-regular fa-note-sticky"></i></button>
+      <button class="btn" @click="penColor" title="文字の色を変更">
+        <i class="fa-solid fa-pen"></i></button>
+      <!-- <button @click="toggleColorMenu">NoteColor</button> -->
+      <ul v-if="showColorMenu" class="color-menu">
+        <li
+          v-for="(colorOption, index) in noteColors"
+          :key="index"
+          @click="changeNoteColor(colorOption.value)"
+        >{{ colorOption.name }}</li>
+      </ul>
+    </div>
     <div class="canvas">
       <div
         v-for="(note, index) in notes"
@@ -173,10 +175,12 @@ export default {
 
 <style scoped>
 .canvas {
+  z-index: 1;
   position: relative;
   width: 10000px;
   height: 10000px;
-  background-color: #82c4e8;
+  background-color: #d7e9fa;
+  margin-top: 70px;
 }
 
 .sticky-note {
@@ -228,4 +232,10 @@ textarea:focus {
   margin-bottom: 10px;
   margin-right: 5px;
 }
-</style>
+.menu {
+  z-index: 2;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+}
+</style>d
