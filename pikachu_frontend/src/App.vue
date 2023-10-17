@@ -11,6 +11,7 @@
             :style="{ backgroundColor: colorOption.value }"
             @click="selectNoteColor(colorOption.value)"
           ></div>
+          <div class="color-option-1">？</div>
         </div>
 
       <button class="btn" @click="togglePenColorPalette" title="文字の色を変更">
@@ -260,11 +261,11 @@ export default {
 }
 
 textarea:focus {
-  border: 2px solid #1e2226; /* ハイライトの境界線の色を指定 */
+  border: 2px solid #616161; /* ハイライトの境界線の色を指定 */
   /* その他のスタイルを追加できます（例：背景色、テキスト色など） */
 }
 .btn {
-  background-color:rgba(0, 0, 0, 0);
+  background-color:#d8d1c948;
   border: 1px solid #a1a1a1;
   border-radius: 10px;
   font-size: 16px;
@@ -311,4 +312,28 @@ textarea:focus {
   border: 1px solid #ddd;
   border-radius: 50px;
 }
+
+.color-option-1 {
+  width: 45px;
+  height: 45px;
+  background-color: #FFD700; /* ゴールデン色 */
+  border: 3px solid #000;    /* 黒のボーダー */
+  font-size: 24px;           /* フォントサイズ */
+  line-height: 60px;         /* インライン要素の中央寄せ */
+  text-align: center;        /* テキストを中央寄せ */
+  font-weight: bold;         /* 太字 */
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); /* 軽微な影 */
+  font-family: "Arial", sans-serif; /* Arial フォント（他のフォントに変更可能） */
+  position: relative;
+  margin: 8px;      /* 以下、疑問符のドロップシャドウのための設定 */
+}
+
+.color-option-1::before {
+  position: absolute;
+  bottom: -5px;
+  left: 2px;                 /* 少し右にずらす */
+  color: rgba(0, 0, 0, 0.2); /* 影の色 */
+  z-index: -1;               /* 元のテキストの背後に配置 */
+}
+
 </style>
