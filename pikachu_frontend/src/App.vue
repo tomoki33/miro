@@ -1,20 +1,29 @@
 <template>
-  <!-- <input type="color" v-model="noteColor"> -->
   <div>
     <div class="menu">
-      <input type="color" style="margin-right: 10px;" v-model="noteColor">
-      <button class="btn" @click="addNote" title="付箋を追加">
+      <button class="btn" @click="toggleColorPalette" title="付箋を追加">
         <i class="fa-regular fa-note-sticky"></i></button>
-      <button class="btn" @click="penColor" title="文字の色を変更">
+        <div v-if="showColorPalette" class="color-palette">
+          <div
+            v-for="(colorOption, index) in noteColors"
+            :key="index"
+            class="color-option"
+            :style="{ backgroundColor: colorOption.value }"
+            @click="selectNoteColor(colorOption.value)"
+          ></div>
+        </div>
+
+      <button class="btn" @click="togglePenColorPalette" title="文字の色を変更">
         <i class="fa-solid fa-pen"></i></button>
-      <!-- <button @click="toggleColorMenu">NoteColor</button> -->
-      <ul v-if="showColorMenu" class="color-menu">
-        <li
-          v-for="(colorOption, index) in noteColors"
-          :key="index"
-          @click="changeNoteColor(colorOption.value)"
-        >{{ colorOption.name }}</li>
-      </ul>
+        <div v-if="showPenColorPalette" class="color-palette">
+          <div
+            v-for="(colorOption, index) in penColors"
+            :key="index"
+            class="pen-color-option"
+            :style="{ backgroundColor: colorOption.value }"
+            @click="selectPenColor(colorOption.value)"
+          ></div>
+        </div>
     </div>
     <div class="canvas">
       <div
@@ -56,20 +65,36 @@ export default {
       notes: [],
       editingIndex: -1,
       draggingIndex: -1,
-      noteColor: '#FFFF00',
+      noteColor: '',
+      penColor: '#000000',
       dragStartX: 0,
       dragStartY: 0,
-      // textColor: '#000000' ,//初期の文字カラー
+      highlighted: false,
+      selectedNoteIndex: -1,
+      showColorPalette: false,
+      showPenColorPalette: false,
       noteColors: [
-      { name: 'Black', value: '#000000' },
-      { name: 'Red', value: '#FF0000' },
-      { name: 'Green', value: '#00FF00' },
-      { name: 'Blue', value: '#0000FF' },
-      // 他の色オプションを追加できます
-    ],
-    showColorMenu: false,
-    highlighted: false,
-    selectedNoteIndex: -1
+        { name: "1", value: "#ffd5d5" },
+        { name: "2", value: "#ffaeae" },
+        { name: "3", value: "#f8d4c3" },
+        { name: "4", value: "#f8eec3" },
+        { name: "5", value: "#dbf8c3" },
+        { name: "6", value: "#d8f2f3" },
+        { name: "7", value: "#d4d7f1" },
+        { name: "8", value: "#dac7e0" },
+        { name: "9", value: "#b8adad" },
+        { name: "10", value: "#ffffff" },
+      ],
+      penColors: [
+        { name: "1", value: "#ff6a6a" },
+        { name: "2", value: "#f1aa89" },
+        { name: "3", value: "#a4d67a" },
+        { name: "4", value: "#afb7ff" },
+        { name: "5", value: "#af8bb9" },
+        { name: "6", value: "#000000" },
+        { name: "7", value: "#6e5f58" },
+        { name: "8", value: "#ffffff" },
+      ]
     };
   },
   watch: {
@@ -128,9 +153,9 @@ export default {
     selectNote(index) {
     this.selectedNoteIndex = index;
   },
-    penColor() {
+    changePenColor() {
       if (this.selectedNoteIndex >= 0) {
-      this.notes[this.selectedNoteIndex].textColor = this.noteColor;
+      this.notes[this.selectedNoteIndex].textColor = this.penColor;
       }
     },
     dragNote(event) {
@@ -159,8 +184,13 @@ export default {
       // ノートのフォントサイズを更新
       this.notes[index].fontSize = fontSize;
     },
-    toggleColorMenu() {
-    this.showColorMenu = !this.showColorMenu;
+    toggleColorPalette() {
+      this.showPenColorPalette = false;
+      this.showColorPalette = !this.showColorPalette;
+    },
+    togglePenColorPalette() {
+      this.showColorPalette = false;
+      this.showPenColorPalette = !this.showPenColorPalette;
     },
     changeNoteColor(color) {
       this.noteColor = color;
@@ -169,6 +199,16 @@ export default {
         note.color = this.noteColor;
       });
     },
+    selectNoteColor(color) {
+      this.showColorPalette = false;
+      this.noteColor = color;
+      this.addNote();
+    },
+    selectPenColor(color) {
+      this.showPenColorPalette = false;
+      this.penColor = color;
+      this.changePenColor();
+    }
   }
 };
 </script>
@@ -204,6 +244,7 @@ export default {
   line-height: 1.5;
   resize: both; /*テキストエリアのサイズを拡大縮小可能にする */
   aspect-ratio: 1/1; /* add this line to make the note square */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .delete-button {
@@ -223,8 +264,8 @@ textarea:focus {
   /* その他のスタイルを追加できます（例：背景色、テキスト色など） */
 }
 .btn {
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color:rgba(0, 0, 0, 0);
+  border: 1px solid #a1a1a1;
   border-radius: 10px;
   font-size: 16px;
   padding: 10px 20px;
@@ -237,4 +278,37 @@ textarea:focus {
   top: 20px;
   left: 20px;
 }
-</style>d
+
+.color-palette {
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  width: 136px; /* 2列の幅を設定します（各色オプションが60pxの場合） */
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10; /* 他の要素の上に表示するため */
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.color-option {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 8px; /* カラーアイテム間のスペースを追加 */
+  display: block; /* テキストがなくても領域が表示されるようにする */
+  border: 1px solid #ddd;
+}
+
+.pen-color-option {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 8px; /* カラーアイテム間のスペースを追加 */
+  display: block; /* テキストがなくても領域が表示されるようにする */
+  border: 1px solid #ddd;
+  border-radius: 50px;
+}
+</style>
