@@ -82,9 +82,9 @@ export default {
   },
   created(){
     this.getpikachu();
-    setInterval(() => {
-      this.getpikachu();
-    }, 1000);
+    // setInterval(() => {
+    //   this.getpikachu();
+    // }, 1000);
   },
   methods: {
     highlightText() {
@@ -135,8 +135,8 @@ export default {
     },
     dragNote(event) {
       if (this.draggingIndex >= 0) {
-        this.notes[this.draggingIndex].x = event.clientX - this.dragStartX;
-        this.notes[this.draggingIndex].y = event.clientY - this.dragStartY;
+        this.notes[this.draggingIndex].x = Math.max(event.clientX - this.dragStartX,0)
+        this.notes[this.draggingIndex].y = Math.max(event.clientY - this.dragStartY,0)
       }
     },
     stopDragging() {
@@ -179,8 +179,7 @@ export default {
   position: relative;
   width: 10000px;
   height: 10000px;
-  background-color: #d7e9fa;
-  margin-top: 70px;
+  background-color: #d8d1c948;
 }
 
 .sticky-note {
