@@ -42,12 +42,15 @@
               backgroundColor: note.color ,
               textAlign: 'center',
               color: note.textColor,
-              fontSize: note.fontSize + 'px'
+              fontSize: note.fontSize + 'px',
+              width: elementWidth + 'px',
+              height: elementWidth + 'px'
               }"
             @focus="highlightText(); editingIndex = index"
             @click="selectNote(index)"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
+          <div class="handle bottom-right" @mousedown="startResize('bottom-right')"></div>
           <button class="delete-button" @click="removeNote(index)">×</button>
         </div>
       </div>
@@ -74,6 +77,14 @@ export default {
       selectedNoteIndex: -1,
       showColorPalette: false,
       showPenColorPalette: false,
+      isResizing: false,
+      resizeHandle: null,
+      startX: 0,
+      startY: 0,
+      startWidth: 0,
+      startHeight: 0,
+      elementWidth: 200,
+      elementHeight: 200,
       noteColors: [
         { name: "1", value: "#ffd5d5" },
         { name: "2", value: "#ffaeae" },
@@ -113,6 +124,62 @@ export default {
     // }, 1000);
   },
   methods: {
+    startResize(handle) {
+      console.log('startResizeリサイズ');
+      // リサイズ開始
+      this.isResizing = true;
+      this.resizeHandle = handle;
+      console.log('ハンドル',handle)
+      console.log('ハンドルX',event.clientX)
+      this.startX = event.clientX;
+      this.startY = event.clientY;
+      this.startWidth = this.elementWidth;
+      this.startHeight = this.elementHeight;
+
+      // マウスムーブとマウスアップのリスナーを追加
+      window.addEventListener("mousemove", this.performResize);
+      window.addEventListener("mouseup", this.stopResize);
+    },
+    performResize(event) {
+      if (this.isResizing) {
+
+        // リサイズ中
+        const deltaX = event.clientX - this.startX;
+        const deltaY = event.clientY - this.startY;
+
+        // 新しいサイズを計算
+        let newWidth = this.startWidth;
+        let newHeight = this.startHeight;
+
+        if (this.resizeHandle.includes("right")) {
+          console.log('右')
+          newWidth += deltaX;
+        } else if (this.resizeHandle.includes("left")) {
+          newWidth -= deltaX;
+        }
+
+        if (this.resizeHandle.includes("bottom")) {
+          newHeight += deltaY;
+        } else if (this.resizeHandle.includes("top")) {
+          console.log('上')
+          newHeight -= deltaY;
+          console.log('newHeight',newHeight)
+        }
+
+        // サイズを更新
+        this.elementWidth = Math.max(newWidth, 100); // 最小幅を設定
+        this.elementHeigh = Math.max(newHeight, 100); // 最小高さを設定
+      }
+    },
+    stopResize() {
+      // リサイズ終了
+      this.isResizing = false;
+      this.resizeHandle = null;
+
+      // マウスムーブとマウスアップのリスナーを削除
+      window.removeEventListener("mousemove", this.performResize);
+      window.removeEventListener("mouseup", this.stopResize);
+    },
     highlightText() {
       // フォーカス時の処理
       this.highlighted = true;
@@ -144,12 +211,17 @@ export default {
       this.notes.push(newNote);
     },
     startDragging(index, event) {
+      if (this.isResizing) {
+        event.stopPropagation();
+      } else {
+        console.log('aaaaa',getComputedStyle(document.body).cursor);
       this.draggingIndex = index;
       this.dragStartX = event.clientX - this.notes[index].x;
       this.dragStartY = event.clientY - this.notes[index].y;
 
       window.addEventListener("mousemove", this.dragNote);
       window.addEventListener("mouseup", this.stopDragging);
+      }
     },
     selectNote(index) {
     this.selectedNoteIndex = index;
@@ -225,10 +297,7 @@ export default {
 
 .sticky-note {
   position: absolute;
-  width: 200px;
-  height: auto;
   padding: 8px;
-  cursor: move;
 }
 
 .note-content {
@@ -239,11 +308,9 @@ export default {
   width: 100%;
   height: 100%;
   border: none;
-  resize: none;
   outline: none;
   font-size: 14px;
   line-height: 1.5;
-  resize: both; /*テキストエリアのサイズを拡大縮小可能にする */
   aspect-ratio: 1/1; /* add this line to make the note square */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -336,4 +403,32 @@ textarea:focus {
   z-index: -1;               /* 元のテキストの背後に配置 */
 }
 
+.handle {
+  width: 10px;
+  height: 10px;
+  background-color: #000; /* or any color you want for the handles */
+  position: absolute;
+}
+
+.top-left {
+  top: 0;
+  left: 0;
+}
+
+.top-right {
+  top: -10px;
+  right: -14px;
+  cursor: ne-resize;
+}
+
+.bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.bottom-right {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
 </style>
