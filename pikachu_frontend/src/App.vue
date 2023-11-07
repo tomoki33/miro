@@ -50,7 +50,7 @@
             @click="selectNote(index)"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
-          <div class="handle bottom-right" @mousedown="startResize(index,$event)"></div>
+          <div class="handle" @mousedown="startResize(index,$event)"></div>
           <button class="delete-button" @click="removeNote(index)">×</button>
         </div>
       </div>
@@ -130,8 +130,8 @@ export default {
       this.resizingIndex = index;
       console.log('インデックス',index)
       console.log('ハンドルX',event.clientX)
-      this.startX = event.clientX - this.notes[index].x;
-      this.startY = event.clientY - this.notes[index].y;
+      this.startX = event.clientX
+      this.startY = event.clientY
       this.startWidth = this.notes[index].width;
       this.startHeight = this.notes[index].width;
 
@@ -316,6 +316,10 @@ export default {
   padding: 0;
 }
 
+textarea {
+  resize: none;
+}
+
 textarea:focus {
   border: 2px solid #616161; /* ハイライトの境界線の色を指定 */
   /* その他のスタイルを追加できます（例：背景色、テキスト色など） */
@@ -395,29 +399,11 @@ textarea:focus {
 .handle {
   width: 10px;
   height: 10px;
-  background-color: #000; /* or any color you want for the handles */
+  background-color: rgba(107, 101, 101, 0.616);/* or any color you want for the handles */
   position: absolute;
-}
-
-.top-left {
-  top: 0;
-  left: 0;
-}
-
-.top-right {
-  top: -10px;
-  right: -14px;
-  cursor: ne-resize;
-}
-
-.bottom-left {
-  bottom: 0;
-  left: 0;
-}
-
-.bottom-right {
-  bottom: 0;
+  bottom: 4px;
   right: 0;
   cursor: se-resize;
 }
+
 </style>
