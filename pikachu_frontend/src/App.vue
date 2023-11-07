@@ -366,7 +366,7 @@ textarea:focus {
   position: absolute;
   display: flex;
   flex-wrap: wrap;
-  width: 136px; /* 2列の幅を設定します（各色オプションが60pxの場合） */
+  width: 137px; /* 2列の幅を設定します（各色オプションが60pxの場合） */
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
