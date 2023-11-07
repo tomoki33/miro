@@ -399,7 +399,7 @@ textarea:focus {
 .handle {
   width: 10px;
   height: 10px;
-  background-color: rgba(107, 101, 101, 0.616);/* or any color you want for the handles */
+  background-color: rgb(100, 96, 96);/* or any color you want for the handles */
   position: absolute;
   bottom: 4px;
   right: 0;
