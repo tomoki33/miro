@@ -203,12 +203,12 @@ export default {
         event.stopPropagation();
       } else {
         console.log('aaaaa',getComputedStyle(document.body).cursor);
-      this.draggingIndex = index;
-      this.dragStartX = event.clientX - this.notes[index].x;
-      this.dragStartY = event.clientY - this.notes[index].y;
+        this.draggingIndex = index;
+        this.dragStartX = event.pageX - this.notes[index].x;
+        this.dragStartY = event.pageY - this.notes[index].y;
 
-      window.addEventListener("mousemove", this.dragNote);
-      window.addEventListener("mouseup", this.stopDragging);
+        window.addEventListener("mousemove", this.dragNote);
+        window.addEventListener("mouseup", this.stopDragging);
       }
     },
     selectNote(index) {
@@ -222,8 +222,30 @@ export default {
     },
     dragNote(event) {
       if (this.draggingIndex >= 0) {
-        this.notes[this.draggingIndex].x = Math.max(event.clientX - this.dragStartX,0)
-        this.notes[this.draggingIndex].y = Math.max(event.clientY - this.dragStartY,0)
+        this.notes[this.draggingIndex].x = Math.max(event.pageX - this.dragStartX, 0);
+        this.notes[this.draggingIndex].y = Math.max(event.pageY - this.dragStartY, 0);
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        // 画面のサイズを取得
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        // スクロールの閾値を設定
+        const scrollThreshold = 50;
+
+        // マウスが画面の端に近づいたときにスクロールを開始
+        if (mouseX < scrollThreshold) {
+          window.scrollBy(-20, 0);
+        } else if (windowWidth - mouseX < scrollThreshold) {
+          window.scrollBy(20, 0);
+        }
+
+        if (mouseY < scrollThreshold) {
+          window.scrollBy(0, -20);
+        } else if (windowHeight - mouseY < scrollThreshold) {
+          window.scrollBy(0, 20);
+        }
       }
     },
     stopDragging() {
