@@ -43,14 +43,14 @@
               textAlign: 'center',
               color: note.textColor,
               fontSize: note.fontSize + 'px',
-              width: elementWidth + 'px',
-              height: elementWidth + 'px'
+              width: note.width + 'px',
+              height: note.width + 'px'
               }"
             @focus="highlightText(); editingIndex = index"
             @click="selectNote(index)"
             @blur="editingIndex = -1; adjustFontSize(index)"
           ></textarea>
-          <div class="handle bottom-right" @mousedown="startResize('bottom-right')"></div>
+          <div class="handle bottom-right" @mousedown="startResize(index,$event)"></div>
           <button class="delete-button" @click="removeNote(index)">×</button>
         </div>
       </div>
@@ -69,6 +69,7 @@ export default {
       notes: [],
       editingIndex: -1,
       draggingIndex: -1,
+      resizingIndex: -1,
       noteColor: '',
       penColor: '#000000',
       dragStartX: 0,
@@ -83,8 +84,6 @@ export default {
       startY: 0,
       startWidth: 0,
       startHeight: 0,
-      elementWidth: 200,
-      elementHeight: 200,
       noteColors: [
         { name: "1", value: "#ffd5d5" },
         { name: "2", value: "#ffaeae" },
@@ -124,17 +123,17 @@ export default {
     // }, 1000);
   },
   methods: {
-    startResize(handle) {
+    startResize(index,event) {
       console.log('startResizeリサイズ');
       // リサイズ開始
       this.isResizing = true;
-      this.resizeHandle = handle;
-      console.log('ハンドル',handle)
+      this.resizingIndex = index;
+      console.log('インデックス',index)
       console.log('ハンドルX',event.clientX)
-      this.startX = event.clientX;
-      this.startY = event.clientY;
-      this.startWidth = this.elementWidth;
-      this.startHeight = this.elementHeight;
+      this.startX = event.clientX - this.notes[index].x;
+      this.startY = event.clientY - this.notes[index].y;
+      this.startWidth = this.notes[index].width;
+      this.startHeight = this.notes[index].width;
 
       // マウスムーブとマウスアップのリスナーを追加
       window.addEventListener("mousemove", this.performResize);
@@ -142,7 +141,6 @@ export default {
     },
     performResize(event) {
       if (this.isResizing) {
-
         // リサイズ中
         const deltaX = event.clientX - this.startX;
         const deltaY = event.clientY - this.startY;
@@ -150,31 +148,19 @@ export default {
         // 新しいサイズを計算
         let newWidth = this.startWidth;
         let newHeight = this.startHeight;
-
-        if (this.resizeHandle.includes("right")) {
-          console.log('右')
-          newWidth += deltaX;
-        } else if (this.resizeHandle.includes("left")) {
-          newWidth -= deltaX;
-        }
-
-        if (this.resizeHandle.includes("bottom")) {
-          newHeight += deltaY;
-        } else if (this.resizeHandle.includes("top")) {
-          console.log('上')
-          newHeight -= deltaY;
-          console.log('newHeight',newHeight)
-        }
-
+        console.log('右')
+        newWidth += deltaX;
+        newHeight += deltaY;
         // サイズを更新
-        this.elementWidth = Math.max(newWidth, 100); // 最小幅を設定
-        this.elementHeigh = Math.max(newHeight, 100); // 最小高さを設定
+        console.log('width',newWidth);
+        console.log('height',newHeight)
+        this.notes[this.resizingIndex].width = Math.max(newWidth, 100); // 最小幅を設定
       }
     },
     stopResize() {
       // リサイズ終了
       this.isResizing = false;
-      this.resizeHandle = null;
+      this.resizingIndex = -1;
 
       // マウスムーブとマウスアップのリスナーを削除
       window.removeEventListener("mousemove", this.performResize);
@@ -188,6 +174,7 @@ export default {
       Service.get('/getpikachu').then(response => {
         console.log('帰って来たGET:',response.data)
         this.notes = response.data
+        console.log(this.notes)
       })
     },
     pikachu(){
@@ -207,6 +194,7 @@ export default {
         color: this.noteColor,
         text: "",
         textColor:'#000000',
+        width: 200,
       };
       this.notes.push(newNote);
     },
@@ -224,8 +212,9 @@ export default {
       }
     },
     selectNote(index) {
-    this.selectedNoteIndex = index;
-  },
+      console.log('ふせん',this.notes[index].width)
+      this.selectedNoteIndex = index;
+    },
     changePenColor() {
       if (this.selectedNoteIndex >= 0) {
       this.notes[this.selectedNoteIndex].textColor = this.penColor;

@@ -18,4 +18,6 @@ public class Notes {
     private String textColor;
     @Getter
     private int fontSize;
+    @Getter
+    private int width;
 }
