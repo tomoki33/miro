@@ -14,7 +14,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-        config.setHostName("localhost");
+        config.setHostName("pikachu-elasticache-test.be7b1l.ng.0001.apne1.cache.amazonaws.com:6379");
         config.setPort(6379);
         return new LettuceConnectionFactory(config);
     }
