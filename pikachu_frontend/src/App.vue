@@ -115,6 +115,7 @@ export default {
       ]
     };
   },
+  //位置情報リアルタイム通信用
   // watch: {
   //   notes: {
   //     handler() {
@@ -125,6 +126,7 @@ export default {
   // },
   created(){
     this.connect();
+    //位置情報リアルタイム通信用
     // this.getpikachu();
   },
   methods: {
@@ -136,8 +138,6 @@ export default {
          this.stompClient.subscribe('/topic/greetings', (noteSize) => {
           const notes = JSON.parse(noteSize.body);
          const text = notes.notes;
-         console.log("noteCheck")
-         console.log(text)
           this.notes = text;
           });
         this.stompClient.subscribe('/topic/inputNotes', (noteContent) => {
@@ -148,23 +148,16 @@ export default {
           });
        });
      },
+     //位置情報リアルタイム通信用
     //  getpikachu(){
-    //   console.log('帰って来たGET:')
-    //   console.log(this.notes)
     //    Service.get('/getPikachu').then(response => {
-   
     //      this.notes.push(JSON.parse(response.data))
-    //      console.log(this.notes)
     //    })
     //  },
     //  disconnect() {
     //    if (this.stompClient !== null) {
     //      this.stompClient.disconnect();
     //    }
-    //    console.log("selectedIndexCheck")
-    //    console.log(this.notes[this.selectedNoteIndex].text)
-    //    console.log(this.selectedNoteIndex)
-
     //   },
     postPikachu(){
         this.stompClient.send(
@@ -183,12 +176,9 @@ export default {
       },
       
     startResize(index,event) {
-      console.log('startResizeリサイズ');
       // リサイズ開始
       this.isResizing = true;
       this.resizingIndex = index;
-      console.log('インデックス',index)
-      console.log('ハンドルX',event.clientX)
       this.startX = event.clientX
       this.startY = event.clientY
       this.startWidth = this.notes[index].width;
@@ -207,12 +197,9 @@ export default {
         // 新しいサイズを計算
         let newWidth = this.startWidth;
         let newHeight = this.startHeight;
-        console.log('右')
         newWidth += deltaX;
         newHeight += deltaY;
         // サイズを更新
-        console.log('width',newWidth);
-        console.log('height',newHeight)
         this.notes[this.resizingIndex].width = Math.max(newWidth, 100); // 最小幅を設定
       }
     },
@@ -238,8 +225,6 @@ export default {
         textColor:'#000000',
         width: 200,
       };
-      console.log("addNoteCheck")
-      console.log(this.notes)
       this.notes.push(newNote);
       this.postPikachu()
     },
@@ -247,7 +232,6 @@ export default {
       if (this.isResizing) {
         event.stopPropagation();
       } else {
-        console.log('aaaaa',getComputedStyle(document.body).cursor);
         this.draggingIndex = index;
         this.dragStartX = event.pageX - this.notes[index].x;
         this.dragStartY = event.pageY - this.notes[index].y;

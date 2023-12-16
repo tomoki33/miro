@@ -5,10 +5,7 @@
 
 リアルタイム通信（ドラッグ&ドロップ除き）
 
-# SSO認証
-```
-aws sso login --profile NW_AdministratorAccess-283455887821
-```
+# Vue立ち上げ：frontendのREAD.ME参照
 
 # Redisへの入り方
 docker配下で

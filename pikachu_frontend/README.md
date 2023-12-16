@@ -2,6 +2,10 @@
 
 ## Project setup
 ```
+nvm install 16.17.0
+```  
+
+```
 npm install
 ```
 
