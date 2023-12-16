@@ -152,12 +152,7 @@ export default {
     //   console.log('帰って来たGET:')
     //   console.log(this.notes)
     //    Service.get('/getPikachu').then(response => {
-    //      console.log('帰って来たGET:',response.data.body)
-    //      console.log('帰って来たGET2:',response.data)
-
-    //      console.log('帰って来たGET3:',JSON.parse(response.data))
-
-     
+   
     //      this.notes.push(JSON.parse(response.data))
     //      console.log(this.notes)
     //    })
