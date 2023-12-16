@@ -1,3 +1,10 @@
+# 簡易版MIRO
+付箋のドラッグ&ドロップ　　
+
+付箋、文字色変更可能　　
+
+リアルタイム通信（ドラッグ&ドロップ除き）
+
 # SSO認証
 ```
 aws sso login --profile NW_AdministratorAccess-283455887821
