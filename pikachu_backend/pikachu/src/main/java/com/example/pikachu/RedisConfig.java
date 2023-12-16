@@ -10,11 +10,12 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+
 public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-        config.setHostName("pikachu-elasticache-test.be7b1l.ng.0001.apne1.cache.amazonaws.com:6379");
+        config.setHostName("localhost");
         config.setPort(6379);
         return new LettuceConnectionFactory(config);
     }

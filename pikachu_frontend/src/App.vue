@@ -25,6 +25,10 @@
             @click="selectPenColor(colorOption.value)"
           ></div>
         </div>
+
+      <button @click="disconnect()">disconnect</button>
+      <button @click="connect()">connect</button>
+
     </div>
     <div class="canvas">
       <div
@@ -49,6 +53,7 @@
             @focus="highlightText(); editingIndex = index"
             @click="selectNote(index)"
             @blur="editingIndex = -1; adjustFontSize(index)"
+            @input="noteInput(index)"
           ></textarea>
           <div class="handle" @mousedown="startResize(index,$event)"></div>
           <button class="delete-button" @click="removeNote(index)">×</button>
@@ -61,7 +66,8 @@
 <script>
 import { Service } from './service/service';
 import '@fortawesome/fontawesome-free/css/all.css';
-
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 export default {
   data() {
@@ -84,6 +90,7 @@ export default {
       startY: 0,
       startWidth: 0,
       startHeight: 0,
+      inputIndex:0,
       noteColors: [
         { name: "1", value: "#ffd5d5" },
         { name: "2", value: "#ffaeae" },
@@ -108,21 +115,78 @@ export default {
       ]
     };
   },
-  watch: {
-    notes: {
-      handler() {
-        this.pikachu()
-      },
-      deep: true, // ネストされたプロパティも監視
-    },
-  },
+  // watch: {
+  //   notes: {
+  //     handler() {
+  //       this.postPikachu()
+  //     },
+  //     deep: true, // ネストされたプロパティも監視
+  //   },
+  // },
   created(){
-    this.getpikachu();
-    // setInterval(() => {
-    //   this.getpikachu();
-    // }, 1000);
+    this.connect();
+    // this.getpikachu();
   },
   methods: {
+    connect() {
+       const socket = new SockJS('http://localhost:8088/gs-guide-websocket');
+       this.stompClient = Stomp.over(socket);
+       this.stompClient.connect({}, (frame) => {
+         console.log(`Connected: ${frame}`);
+         this.stompClient.subscribe('/topic/greetings', (noteSize) => {
+          const notes = JSON.parse(noteSize.body);
+         const text = notes.notes;
+         console.log("noteCheck")
+         console.log(text)
+          this.notes = text;
+          });
+        this.stompClient.subscribe('/topic/inputNotes', (noteContent) => {
+        const message = JSON.parse(noteContent.body);
+         const value = message.noteContent;
+         const index = message.index;
+         this.notes[index].text = value;
+          });
+       });
+     },
+    //  getpikachu(){
+    //   console.log('帰って来たGET:')
+    //   console.log(this.notes)
+    //    Service.get('/getPikachu').then(response => {
+    //      console.log('帰って来たGET:',response.data.body)
+    //      console.log('帰って来たGET2:',response.data)
+
+    //      console.log('帰って来たGET3:',JSON.parse(response.data))
+
+     
+    //      this.notes.push(JSON.parse(response.data))
+    //      console.log(this.notes)
+    //    })
+    //  },
+    //  disconnect() {
+    //    if (this.stompClient !== null) {
+    //      this.stompClient.disconnect();
+    //    }
+    //    console.log("selectedIndexCheck")
+    //    console.log(this.notes[this.selectedNoteIndex].text)
+    //    console.log(this.selectedNoteIndex)
+
+    //   },
+    postPikachu(){
+        this.stompClient.send(
+         '/app/postPikachu',
+         {},
+         JSON.stringify({ notes: this.notes})
+       );
+      },
+    noteInput(index){
+       this.stompClient.send(
+         '/app/postNoteContents',
+         {},
+         JSON.stringify({ noteContent: this.notes[index].text , index: index }),
+       );
+        this.inputIndex = index
+      },
+      
     startResize(index,event) {
       console.log('startResizeリサイズ');
       // リサイズ開始
@@ -170,23 +234,6 @@ export default {
       // フォーカス時の処理
       this.highlighted = true;
     },
-    getpikachu(){
-      Service.get('/getpikachu').then(response => {
-        console.log('帰って来たGET:',response.data)
-        this.notes = response.data
-        console.log(this.notes)
-      })
-    },
-    pikachu(){
-      console.log('pikachu:',JSON.stringify(this.notes))
-    Service.post('/pikachu', JSON.stringify(this.notes))
-        .then(response => {
-         console.log('帰って来た:',response.data)
-        })
-        .catch(error => {
-          console.log('えらー:',error);
-        })
-    },
     addNote() {
       const newNote = {
         x: 50,
@@ -196,7 +243,10 @@ export default {
         textColor:'#000000',
         width: 200,
       };
+      console.log("addNoteCheck")
+      console.log(this.notes)
       this.notes.push(newNote);
+      this.postPikachu()
     },
     startDragging(index, event) {
       if (this.isResizing) {
@@ -212,7 +262,6 @@ export default {
       }
     },
     selectNote(index) {
-      console.log('ふせん',this.notes[index].width)
       this.selectedNoteIndex = index;
     },
     changePenColor() {
@@ -256,9 +305,9 @@ export default {
     },
     removeNote(index) {
       this.notes.splice(index, 1);
+      this.postPikachu()
     },
     adjustFontSize(index) {
-      console.log("adjustFontSize");
       const noteTextArea = this.$refs.noteTextArea[index]; // テキストエリアの要素を取得
       const noteContent = noteTextArea.parentNode; // 親要素を取得
       const noteHeight = noteContent.clientHeight; // 親要素の高さを取得
